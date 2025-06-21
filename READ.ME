@@ -1,21 +1,70 @@
-# PyLinuxGuard: Linux System Behavior Monitoring & Anomaly Detection
-
-## Overview
-
-**PyLinuxGuard** is a Python-based tool designed to monitor Linux system metrics such as CPU, memory, disk usage, and network traffic. It compares real-time data with a baseline of normal behavior and detects anomalies. When an anomaly is found, the tool sends an email alert to notify you. Ideal for system administrators and security professionals who need to monitor system performance and security.
-
-## Features
-
+PyLinuxGuard: Linux System Behavior Monitoring & Anomaly Detection Overview
+PyLinuxGuard is a Python-based tool designed to monitor Linux system metrics such as CPU, memory, disk usage, and network traffic. It compares real-time data with a baseline of normal behavior and detects anomalies.
+When an anomaly is found, the tool sends an email alert to notify you. Ideal for system administrators and security professionals who need to monitor system performance and security.
+Features
 - Real-time system metrics monitoring (CPU, memory, disk, network usage)
 - Baseline data collection for anomaly detection
 - Email notifications for detected anomalies
 - Simple command-line interface (CLI)
-
-## Installation
-
-### 1. Clone the Repository
+Installation
+1. Clone the Repository
 First, clone the repository to your local machine using the following command:
-
-```bash
 git clone https://github.com/your-username/PyLinuxGuard.git
 cd PyLinuxGuard
+2. Install Required Dependencies
+Make sure you have Python 3 installed. Then install the necessary Python libraries using pip:
+pip3 install psutil numpy
+Usage
+Running the Script
+Once the dependencies are installed, you can run the script to start monitoring your Linux system:
+python3 monitor.py
+This will begin collecting system metrics every 5 seconds. It will compare the real-time data to
+previously
+collected baseline data and alert you if any anomalies are detected. The system metrics will be
+saved in the
+metrics_baseline.json file, which can be used for future comparisons.
+Setting Up Email Notifications
+To enable email alerts when an anomaly is detected, you need to configure your email settings.
+Follow these steps:
+1. Open monitor.py and Locate the send_alert() Function
+In the script, find the send_alert() function, which is responsible for sending email notifications when
+an anomaly is detected:
+def send_alert(message):
+ msg = MIMEText(message)
+ msg['Subject'] = 'Anomaly Detected in System Behavior'
+ msg['From'] = 'your_email@example.com' # Your email address
+ msg['To'] = 'recipient@example.com' # Recipient's email address
+ with smtplib.SMTP('smtp.example.com') as server: # Your email provider's SMTP server
+ server.sendmail(msg['From'], [msg['To']], msg.as_string())
+2. Update Email Settings
+- From Email: Replace 'your_email@example.com' with your own email address (from which alerts
+will be sent).
+- To Email: Replace 'recipient@example.com' with the email address where you want to receive the
+alerts.
+- SMTP Server: Replace 'smtp.example.com' with the SMTP server for your email provider:
+ - For Gmail, use 'smtp.gmail.com'.
+ - For Outlook, use 'smtp-mail.outlook.com'.
+ - For Yahoo, use 'smtp.mail.yahoo.com'.
+3. Enable SMTP Authentication (For Gmail Users)
+If you're using Gmail, you might need to enable "Less Secure Apps" for Gmail to allow Python to
+send emails.
+Visit this link and enable access:
+Google Less Secure Apps.
+Alternatively, for better security, consider using App Passwords if you have 2-factor authentication
+enabled for your Gmail account.
+4. (Optional) Add SMTP Authentication
+If your email provider requires authentication (e.g., Gmail), you can modify the send_alert() function
+as follows:
+with smtplib.SMTP('smtp.gmail.com') as server: # Gmail SMTP server
+ server.starttls() # Use TLS encryption for secure connection
+ server.login('your_email@example.com', 'your_password') # Your email and password
+ server.sendmail(msg['From'], [msg['To']], msg.as_string())
+Example Output
+When an anomaly is detected, you will receive an email with a message like this:
+Anomaly detected in cpu_percent: 85.4%
+This means that the CPU usage exceeded the threshold compared to the baseline data.
+License
+This project is licensed under the MIT License - see the LICENSE file for details.
+Acknowledgments
+- psutil - for system and process monitoring.
+- numpy - for handling mathematical operations like mean and standard deviation.
